@@ -97,6 +97,8 @@ namespace ONPcalculator {
         private void equalClick(object sender, EventArgs e) {
             if (inputTextBox.Text.Length > 1 && areBracketsClosed()) {
                 if (currentNumber != null) {
+                    if (elements.Count == 0)
+                        return;
                     elements.Add(currentNumber);
                     currentNumber = null;
                     isNumberLast = false;
