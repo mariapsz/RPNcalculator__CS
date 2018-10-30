@@ -30,7 +30,7 @@ namespace ONPcalculator {
             } else {
                 if (currentNumber == "0") {
                     currentNumber = text;
-                    inputTextBox.Text = inputTextBox.Text.Remove(inputTextBox.Text.Length - 1) + text;
+                    inputTextBox.Text = inputTextBox.Text.RemoveLastChar() + text;
                 } else {
                     currentNumber += text;
                     inputTextBox.Text += text;
@@ -53,7 +53,7 @@ namespace ONPcalculator {
             string text = ((Button)sender).Text;
             if (!isNumberLast) {
                 if (text == "(") {
-                    if (elements.Count > 0 && (ONP.isOperator(elements[elements.Count - 1]) || elements[elements.Count - 1] == "(")) {
+                    if (elements.Count > 0 && (ONP.isOperator(elements.Last()) || elements.Last() == "(")) {
                         inputTextBox.Text += "(";
                         elements.Add(text);
                     } else if (inputTextBox.Text == "0") {
@@ -69,13 +69,13 @@ namespace ONPcalculator {
                     inputTextBox.Text = result + text;
                     result = null;
                 } else if (ONP.isOperator(text)) {
-                    if (inputTextBox.Text.Length > 0 && elements[elements.Count - 1] == ")") {
+                    if (inputTextBox.Text.Length > 0 && elements.Last() == ")") {
                         elements.Add(text);
                         inputTextBox.Text += text;
                     } else {
-                        elements.RemoveAt(elements.Count - 1);
+                        elements.RemoveLast();
                         elements.Add(text);
-                        inputTextBox.Text = inputTextBox.Text.Remove(inputTextBox.Text.Length - 1);
+                        inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
                         inputTextBox.Text += text;
                     }
                 } else if (text == ")" && isBracketNeeded()) {
@@ -105,44 +105,43 @@ namespace ONPcalculator {
                     result = Convert.ToString(ONP.Calculate(elements));
                     elements.Clear();
                     inputTextBox.Text += "=" + result;
-                } else if (elements.Count > 0 && elements[elements.Count - 1] == ")") {
+                } else if (elements.Count > 0 && elements.Last() == ")") {
                     result = Convert.ToString(ONP.Calculate(elements));
                     elements.Clear();
                     isNumberLast = false;
                     inputTextBox.Text += "=" + result;
                 }
             }
-//            MRclicked = true;
         }       
 
         private void deleteClick(object sender, EventArgs e) {
             if (inputTextBox.Text != "0") {
                 if (!isNumberLast) {
                     if (elements.Count > 0) {
-                        inputTextBox.Text = inputTextBox.Text.Remove(inputTextBox.Text.Length - 1);
-                        elements.RemoveAt(elements.Count - 1);
-                        if (elements.Count > 0 && elements[elements.Count - 1] != ")" && !ONP.isOperator(elements[elements.Count - 1])) {
-                            currentNumber = (string)elements[elements.Count - 1];
+                        inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                        elements.RemoveLast();
+                        if (elements.Count > 0 && elements.Last() != ")" && !ONP.isOperator(elements.Last())) {
+                            currentNumber = elements.Last();
                             isNumberLast = true;
                         }
                     }
                 } else if (elements.Count > 0) {
-                    string lastElementInList = (string)elements[elements.Count - 1];
+                    string lastElementInList = elements.Last();
                     if (isANumber(lastElementInList)) {
-                        currentNumber = (string)elements[elements.Count - 1];
-                        elements.RemoveAt(elements.Count - 1);
-                        inputTextBox.Text = inputTextBox.Text.Remove(inputTextBox.Text.Length - 1);
-                        if (inputTextBox.Text.Length > 0 && !isANumber(inputTextBox.Text[inputTextBox.Text.Length - 1].ToString()))
+                        currentNumber = elements.Last();
+                        elements.RemoveLast();
+                        inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                        if (inputTextBox.Text.Length > 0 && !isANumber(inputTextBox.Text.LastChar()))
                             isNumberLast = false;
                     } else {
-                        inputTextBox.Text = inputTextBox.Text.Remove(inputTextBox.Text.Length - 1);
-                        currentNumber = currentNumber.Remove(currentNumber.Length - 1);
+                        inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                        currentNumber = currentNumber.RemoveLastChar();
                         if (currentNumber.Length == 0)
                             isNumberLast = false;
                     }
                 } else {
-                    inputTextBox.Text = inputTextBox.Text.Remove(inputTextBox.Text.Length - 1);
-                    currentNumber = currentNumber.Remove(currentNumber.Length - 1);
+                    inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                    currentNumber = currentNumber.RemoveLastChar();
                     if (currentNumber.Length == 0)
                         isNumberLast = false;                    
                 }              
@@ -154,8 +153,7 @@ namespace ONPcalculator {
         private void resetClick(object sender, EventArgs e) {
             inputTextBox.Text = "0";
             elements.Clear();
-            //if (memory != null)
-                MRclicked = false;
+            MRclicked = false;
         }
 
         private void MRClick(object sender, EventArgs e) {
@@ -187,7 +185,7 @@ namespace ONPcalculator {
         }
 
         private bool isBracketNeeded() {
-            return (Count(inputTextBox.Text, '(') > Count(inputTextBox.Text, ')')) && (isNumberLast || elements[elements.Count-1] == ")");
+            return (Count(inputTextBox.Text, '(') > Count(inputTextBox.Text, ')')) && (isNumberLast || elements.Last() == ")");
         }
 
         private bool areBracketsClosed() {
