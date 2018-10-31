@@ -118,9 +118,9 @@ namespace ONPcalculator {
                 }
             }
         }
-
+        
         private void deleteClick(object sender, EventArgs e) {
-            if (inputTextBox.Text != "0") {
+        /*    if (inputTextBox.Text != "0") {
                 if (!isNumberLast) {
                     if (elements.Count > 0) {
                         inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
@@ -152,9 +152,9 @@ namespace ONPcalculator {
                 }
                 if (inputTextBox.Text.Length == 0)
                     inputTextBox.Text = "0";
-            }
+            }*/
         }
-
+        
         private void resetClick(object sender, EventArgs e) {
             inputTextBox.Text = "0";
             elements.Clear();
@@ -207,7 +207,7 @@ namespace ONPcalculator {
             return count;
         }
 
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e){
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e) {
             switch (e.KeyValue) {
                 case (int)Keys.D0:
                     if (e.Shift) {
@@ -270,10 +270,8 @@ namespace ONPcalculator {
                     }
                     break;
                 case (int)Keys.OemQuestion:
-                    if (e.Shift) {
-                        division.Focus();
-                        division.PerformClick();
-                    }
+                    division.Focus();
+                    division.PerformClick();
                     break;
                 case (int)Keys.Oemplus:
                     if (e.Shift) {
@@ -282,6 +280,12 @@ namespace ONPcalculator {
                     } else {
                         equal.Focus();
                         equal.PerformClick();
+                    }
+                    break;
+                case (int)Keys.OemMinus:
+                    if (e.Shift) {
+                        minus.Focus();
+                        minus.PerformClick();
                     }
                     break;
                 case (int)Keys.Back:
@@ -309,6 +313,8 @@ namespace ONPcalculator {
                     }
                     break;
             }
-        }       
+        }
+
+       
     }   
 }
