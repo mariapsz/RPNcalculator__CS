@@ -23,8 +23,6 @@ namespace ONPcalculator {
             return result;
         }
 
-
-
         public static ArrayList toONPNotation(ArrayList infixNotation) {
             ArrayList ONPNotation = new ArrayList();
             Stack operators = new Stack();

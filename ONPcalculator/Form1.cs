@@ -13,6 +13,7 @@ namespace ONPcalculator {
     public partial class MainWindow : Form {
         public MainWindow() {
             InitializeComponent();
+            this.KeyPreview = true;
         }
 
         ArrayList elements = new ArrayList();
@@ -22,11 +23,13 @@ namespace ONPcalculator {
         string result = null;
         bool MRclicked = false;
 
+
         private void numberClick(object sender, EventArgs e) {
+            if (inputTextBox.Text.Length > 33) return;
             string text = ((Button)sender).Text;
             if (inputTextBox.Text == "0" || inputTextBox.Text.Contains('=')) {
                 inputTextBox.Text = text;
-                currentNumber = text;                
+                currentNumber = text;
             } else {
                 if (currentNumber == "0") {
                     currentNumber = text;
@@ -41,6 +44,7 @@ namespace ONPcalculator {
         }
 
         private void commaClick(object sender, EventArgs e) {
+            if (inputTextBox.Text.Length > 33) return;
             if (!currentNumber.Contains(',')) {
                 inputTextBox.Text += ',';
                 currentNumber += ',';
@@ -50,6 +54,7 @@ namespace ONPcalculator {
         }
 
         private void operatorClick(object sender, EventArgs e) {
+            if (inputTextBox.Text.Length > 33) return;
             string text = ((Button)sender).Text;
             if (!isNumberLast) {
                 if (text == "(") {
@@ -81,7 +86,7 @@ namespace ONPcalculator {
                 } else if (text == ")" && isBracketNeeded()) {
                     elements.Add(text);
                     inputTextBox.Text += text;
-                }                    
+                }
             } else {
                 if (ONP.isOperator(text) || (text == ")" && isBracketNeeded())) {
                     elements.Add(currentNumber);
@@ -112,7 +117,7 @@ namespace ONPcalculator {
                     inputTextBox.Text += "=" + result;
                 }
             }
-        }       
+        }
 
         private void deleteClick(object sender, EventArgs e) {
             if (inputTextBox.Text != "0") {
@@ -143,8 +148,8 @@ namespace ONPcalculator {
                     inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
                     currentNumber = currentNumber.RemoveLastChar();
                     if (currentNumber.Length == 0)
-                        isNumberLast = false;                    
-                }              
+                        isNumberLast = false;
+                }
                 if (inputTextBox.Text.Length == 0)
                     inputTextBox.Text = "0";
             }
@@ -191,7 +196,7 @@ namespace ONPcalculator {
         private bool areBracketsClosed() {
             return Count(inputTextBox.Text, '(') == Count(inputTextBox.Text, ')');
         }
-
+        
         public static int Count(string s, char character) {
             char[] array = s.ToCharArray();
             int count = 0;
@@ -201,5 +206,109 @@ namespace ONPcalculator {
             }
             return count;
         }
-    }
+
+        private void MainWindow_KeyDown(object sender, KeyEventArgs e){
+            switch (e.KeyValue) {
+                case (int)Keys.D0:
+                    if (e.Shift) {
+                        rightBracket.Focus();
+                        rightBracket.PerformClick();
+                    } else {
+                        zero.Focus();
+                        zero.PerformClick();
+                    }
+                    break;
+                case (int)Keys.D1:
+                    one.Focus();
+                    one.PerformClick();
+                    break;
+                case (int)Keys.D2:
+                    two.Focus();
+                    two.PerformClick();
+                    break;
+                case (int)Keys.D3:
+                    three.Focus();
+                    three.PerformClick();
+                    break;
+                case (int)Keys.D4:
+                    four.Focus();
+                    four.PerformClick();
+                    break;
+                case (int)Keys.D5:
+                    five.Focus();
+                    five.PerformClick();
+                    break;
+                case (int)Keys.D6:
+                    if (e.Shift) {
+                        power.Focus();
+                        power.PerformClick();
+                    } else {
+                        six.Focus();
+                        six.PerformClick();
+                    }
+                    break;
+                case (int)Keys.D7:
+                    seven.Focus();
+                    seven.PerformClick();
+                    break;
+                case (int)Keys.D8:
+                    if (e.Shift) {
+                        multiply.Focus();
+                        multiply.PerformClick();
+                    } else {
+                        eight.Focus();
+                        eight.PerformClick();
+                    }
+                    break;
+                case (int)Keys.D9:
+                    if (e.Shift) {
+                        leftBracket.Focus();
+                        leftBracket.PerformClick();
+                    } else {
+                        nine.Focus();
+                        nine.PerformClick();
+                    }
+                    break;
+                case (int)Keys.OemQuestion:
+                    if (e.Shift) {
+                        division.Focus();
+                        division.PerformClick();
+                    }
+                    break;
+                case (int)Keys.Oemplus:
+                    if (e.Shift) {
+                        plus.Focus();
+                        plus.PerformClick();
+                    } else {
+                        equal.Focus();
+                        equal.PerformClick();
+                    }
+                    break;
+                case (int)Keys.Back:
+                    delete.Focus();
+                    delete.PerformClick();
+                    break;
+                case (int)Keys.OemPeriod:
+                    dot.Focus();
+                    dot.PerformClick();
+                    break;
+                case (int)Keys.Escape:
+                    reset.Focus();
+                    reset.PerformClick();
+                    break;
+                case (int)Keys.M:
+                    if (e.Shift) {
+                        memoryPlus.Focus();
+                        memoryPlus.PerformClick();
+                    } else if (e.Control) {
+                        memoryMinus.Focus();
+                        memoryMinus.PerformClick();
+                    } else {
+                        MR.Focus();
+                        MR.PerformClick();
+                    }
+                    break;
+            }
+        }       
+    }   
 }
