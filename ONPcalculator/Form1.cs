@@ -45,6 +45,7 @@ namespace ONPcalculator {
 
         private void commaClick(object sender, EventArgs e) {
             if (inputTextBox.Text.Length > 33) return;
+            if (!isNumberLast) return;
             if (!currentNumber.Contains(',')) {
                 inputTextBox.Text += ',';
                 currentNumber += ',';
@@ -59,15 +60,18 @@ namespace ONPcalculator {
             if (!isNumberLast) {
                 if (text == "(") {
                     if (elements.Count > 0 && (ONP.isOperator(elements.Last()) || elements.Last() == "(")) {
+                        if (inputTextBox.Text.LastChar() == ",") return;
                         inputTextBox.Text += "(";
                         elements.Add(text);
                     } else if (inputTextBox.Text == "0") {
                         inputTextBox.Text = "(";
                         elements.Add(text);
                     }
-                } else if (text == "-" && inputTextBox.Text == "0") {
-                    elements.Add(text);
-                    inputTextBox.Text = text;
+                } else if (inputTextBox.Text == "0") {
+                    if (text == "-") {
+                        elements.Add(text);
+                        inputTextBox.Text = text;
+                    }
                 } else if (inputTextBox.Text.Contains("=")) {
                     elements.Add(result);
                     elements.Add(text);
@@ -78,10 +82,13 @@ namespace ONPcalculator {
                         elements.Add(text);
                         inputTextBox.Text += text;
                     } else {
-                        elements.RemoveLast();
-                        elements.Add(text);
-                        inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
-                        inputTextBox.Text += text;
+                        if (inputTextBox.Text.Length > 1 && elements.Last() == "(") return;
+                        else {
+                            elements.RemoveLast();
+                            elements.Add(text);
+                            inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                            inputTextBox.Text += text;
+                        }
                     }
                 } else if (text == ")" && isBracketNeeded()) {
                     elements.Add(text);
@@ -96,7 +103,7 @@ namespace ONPcalculator {
                     inputTextBox.Text += text;
                 }
             }
-            MRclicked = true;
+            MRclicked = false;
         }
 
         private void equalClick(object sender, EventArgs e) {
@@ -119,21 +126,24 @@ namespace ONPcalculator {
             }
         }
         
-        private void deleteClick(object sender, EventArgs e) {
-        /*    if (inputTextBox.Text != "0") {
+        private void deleteClick(object sender, EventArgs e){
+            if (inputTextBox.Text != "0") {
                 if (!isNumberLast) {
-                    if (elements.Count > 0) {
-                        inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                    inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
+                    if (currentNumber != "") {
+                        currentNumber = currentNumber.RemoveLastChar();
+                        isNumberLast = true;
+                    } else {
                         elements.RemoveLast();
                         if (elements.Count > 0 && elements.Last() != ")" && !ONP.isOperator(elements.Last())) {
                             currentNumber = elements.Last();
                             isNumberLast = true;
+                            elements.RemoveLast();
                         }
-                    }
+                    }                    
                 } else if (elements.Count > 0) {
-                    string lastElementInList = elements.Last();
-                    if (isANumber(lastElementInList)) {
-                        currentNumber = elements.Last();
+                    if (isANumber(elements.Last())) {
+                        currentNumber = elements.Last().RemoveLastChar();
                         elements.RemoveLast();
                         inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
                         if (inputTextBox.Text.Length > 0 && !isANumber(inputTextBox.Text.LastChar()))
@@ -141,18 +151,18 @@ namespace ONPcalculator {
                     } else {
                         inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
                         currentNumber = currentNumber.RemoveLastChar();
-                        if (currentNumber.Length == 0)
+                        if (currentNumber == "" || currentNumber.LastChar() == ",")
                             isNumberLast = false;
                     }
                 } else {
                     inputTextBox.Text = inputTextBox.Text.RemoveLastChar();
                     currentNumber = currentNumber.RemoveLastChar();
-                    if (currentNumber.Length == 0)
+                    if (currentNumber == "" || currentNumber.LastChar() == ",")
                         isNumberLast = false;
                 }
                 if (inputTextBox.Text.Length == 0)
                     inputTextBox.Text = "0";
-            }*/
+            }
         }
         
         private void resetClick(object sender, EventArgs e) {

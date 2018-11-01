@@ -480,6 +480,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ErrorProvider errorProvider;
         private System.Windows.Forms.TextBox inputTextBox;
+        private System.Windows.Forms.TextBox outputTextBox;
     }
 }
 

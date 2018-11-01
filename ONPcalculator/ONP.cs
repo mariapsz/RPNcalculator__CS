@@ -51,9 +51,7 @@ namespace ONPcalculator {
         }
 
         public static bool isOperator(object o) {
-            if (o == "+" || o == "-" || o == "*" || o == "/" || o == "^")
-                return true;
-            return false;
+            return (o == "+" || o == "-" || o == "*" || o == "/" || o == "^");           
         }
 
         public static int getPriority(object element) {
