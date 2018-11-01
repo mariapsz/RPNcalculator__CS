@@ -17,15 +17,15 @@ namespace ONPcalculator {
         }
 
         ArrayList elements = new ArrayList();
-        string currentNumber = null;
+        string currentNumber = "";
         double memory;
         bool isNumberLast = false;
-        string result = null;
+        string result = "";
         bool MRclicked = false;
 
 
         private void numberClick(object sender, EventArgs e) {
-            if (inputTextBox.Text.Length > 33) return;
+            if (inputTextBox.Text.Length > 22) return;
             string text = ((Button)sender).Text;
             if (inputTextBox.Text == "0" || inputTextBox.Text.Contains('=')) {
                 inputTextBox.Text = text;
@@ -44,7 +44,7 @@ namespace ONPcalculator {
         }
 
         private void commaClick(object sender, EventArgs e) {
-            if (inputTextBox.Text.Length > 33) return;
+            if (inputTextBox.Text.Length > 22) return;
             if (!isNumberLast) return;
             if (!currentNumber.Contains(',')) {
                 inputTextBox.Text += ',';
@@ -55,7 +55,7 @@ namespace ONPcalculator {
         }
 
         private void operatorClick(object sender, EventArgs e) {
-            if (inputTextBox.Text.Length > 33) return;
+            if (inputTextBox.Text.Length > 22) return;
             string text = ((Button)sender).Text;
             if (!isNumberLast) {
                 if (text == "(") {
@@ -76,7 +76,7 @@ namespace ONPcalculator {
                     elements.Add(result);
                     elements.Add(text);
                     inputTextBox.Text = result + text;
-                    result = null;
+                    result = "";
                 } else if (ONP.isOperator(text)) {
                     if (inputTextBox.Text.Length > 0 && elements.Last() == ")") {
                         elements.Add(text);
@@ -97,7 +97,7 @@ namespace ONPcalculator {
             } else {
                 if (ONP.isOperator(text) || (text == ")" && isBracketNeeded())) {
                     elements.Add(currentNumber);
-                    currentNumber = null;
+                    currentNumber = "";
                     isNumberLast = false;
                     elements.Add(text);
                     inputTextBox.Text += text;
@@ -108,20 +108,24 @@ namespace ONPcalculator {
 
         private void equalClick(object sender, EventArgs e) {
             if (inputTextBox.Text.Length > 1 && areBracketsClosed()) {
-                if (currentNumber != null) {
+                if (currentNumber != "") {
                     if (elements.Count == 0)
                         return;
                     elements.Add(currentNumber);
-                    currentNumber = null;
+                    currentNumber = "";
                     isNumberLast = false;
                     result = Convert.ToString(ONP.Calculate(elements));
                     elements.Clear();
-                    inputTextBox.Text += "=" + result;
+                    if (inputTextBox.Text.Length + result.Length > 22)
+                        inputTextBox.Text = "=" + result;
+                    else inputTextBox.Text += "=" + result;
                 } else if (elements.Count > 0 && elements.Last() == ")") {
                     result = Convert.ToString(ONP.Calculate(elements));
                     elements.Clear();
                     isNumberLast = false;
-                    inputTextBox.Text += "=" + result;
+                    if (inputTextBox.Text.Length + result.Length > 22)
+                        inputTextBox.Text = "=" + result;
+                    else inputTextBox.Text += "=" + result;
                 }
             }
         }
@@ -135,11 +139,11 @@ namespace ONPcalculator {
                         isNumberLast = true;
                     } else {
                         elements.RemoveLast();
-                        if (elements.Count > 0 && elements.Last() != ")" && !ONP.isOperator(elements.Last())) {
+                        if (elements.Count > 0 && isANumber(elements.Last())) {
                             currentNumber = elements.Last();
                             isNumberLast = true;
                             elements.RemoveLast();
-                        }
+                        } 
                     }                    
                 } else if (elements.Count > 0) {
                     if (isANumber(elements.Last())) {
@@ -186,12 +190,14 @@ namespace ONPcalculator {
         }
 
         private void memoryPlusClick(object sender, EventArgs e) {
-            memory = Convert.ToDouble(memory) + Convert.ToDouble(currentNumber);
+            if (isNumberLast)
+                memory = Convert.ToDouble(memory) + Convert.ToDouble(currentNumber);
             MRclicked = false;
         }
 
         private void memoryMinusClick(object sender, EventArgs e) {
-            memory = Convert.ToDouble(memory) - Convert.ToDouble(currentNumber);
+            if (isNumberLast)
+                memory = Convert.ToDouble(memory) - Convert.ToDouble(currentNumber);
             MRclicked = false;
         }
 
